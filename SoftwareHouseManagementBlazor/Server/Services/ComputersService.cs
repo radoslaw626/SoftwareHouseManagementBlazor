@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using SoftwareHouseManagementBlazor.Server.Data;
-using SoftwareHouseManagementBlazor.Server.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using SoftwareHouseManagementBlazor.Shared.Models;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace SoftwareHouseManagementBlazor.Server.Models
+namespace SoftwareHouseManagementBlazor.Shared.Models
 {
     public class Access
     {

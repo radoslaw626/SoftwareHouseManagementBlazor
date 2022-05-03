@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace SoftwareHouseManagementBlazor.Server.Models
+namespace SoftwareHouseManagementBlazor.Shared.Models
 {
     public class Task
     {
@@ -10,7 +10,7 @@ namespace SoftwareHouseManagementBlazor.Server.Models
             HoursWorked = new Collection<HoursWorked>();
         }
         public long Id { get; set; }
-        public string Subject { get; set; } 
+        public string Subject { get; set; }
         public long AssignedHours { get; set; }
         public long WorkedHours { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SoftwareHouseManagementBlazor.
 @attribute [Authorize]
 @inject HttpClient Http
 
@@ -8,7 +9,7 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@*@if (forecasts == null)
+@if (forecasts == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -24,32 +25,32 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var position in positions)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@position.Date.ToShortDateString()</td>
+                    <td>@position.TemperatureC</td>
+                    <td>@position.TemperatureF</td>
+                    <td>@position.Summary</td>
                 </tr>
             }
         </tbody>
     </table>
-}*@
+}
 
 @code {
-    //private WeatherForecast[] forecasts;
+    private Position[] positions;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    try
-    //    {
-    //        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-    //    }
-    //    catch (AccessTokenNotAvailableException exception)
-    //    {
-    //        exception.Redirect();
-    //    }
-    //}
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            position = await Http.GetFromJsonAsync<Position[]>("Positions");}
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
 
 }

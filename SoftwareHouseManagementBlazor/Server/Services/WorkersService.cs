@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using SoftwareHouseManagementBlazor.Server.Data;
 using SoftwareHouseManagementBlazor.Server.Models;
+using SoftwareHouseManagementBlazor.Shared.Models;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 {

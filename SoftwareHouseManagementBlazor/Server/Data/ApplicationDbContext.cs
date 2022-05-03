@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SoftwareHouseManagementBlazor.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Task = SoftwareHouseManagementBlazor.Server.Models.Task;
+using SoftwareHouseManagementBlazor.Shared;
+using SoftwareHouseManagementBlazor.Shared.Models;
 
 namespace SoftwareHouseManagementBlazor.Server.Data
 {

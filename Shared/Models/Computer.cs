@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SoftwareHouseManagementBlazor.Server.Models
+namespace SoftwareHouseManagementBlazor.Shared.Models
 {
     public class Computer
     {
         public Computer(string nameModel)
         {
-            this.Model = nameModel;
+            Model = nameModel;
         }
 
         public Computer()

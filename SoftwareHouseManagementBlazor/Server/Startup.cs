@@ -8,9 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoftwareHouseManagementBlazor.Server.Data;
-using SoftwareHouseManagementBlazor.Server.Models;
 using System.Linq;
 using SoftwareHouseManagementBlazor.Server.Services;
+using SoftwareHouseManagementBlazor.Shared.Models;
 
 namespace SoftwareHouseManagementBlazor.Server
 {
