@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareHouseManagementBlazor.Server", "SoftwareHouseManagementBlazor\Server\SoftwareHouseManagementBlazor.Server.csproj", "{09030252-4D42-4FA9-8B70-A67CC08A7897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftwareHouseManagementBlazor.Server", "SoftwareHouseManagementBlazor\Server\SoftwareHouseManagementBlazor.Server.csproj", "{09030252-4D42-4FA9-8B70-A67CC08A7897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareHouseManagementBlazor.Client", "SoftwareHouseManagementBlazor\Client\SoftwareHouseManagementBlazor.Client.csproj", "{147FCB6E-64A6-406D-8674-963FB15A49F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareHouseManagementBlazor.Shared", "SoftwareHouseManagementBlazor\Shared\SoftwareHouseManagementBlazor.Shared.csproj", "{B7E71829-6576-446F-8E9F-F95B99A3D230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftwareHouseManagementBlazor.Client", "SoftwareHouseManagementBlazor\Client\SoftwareHouseManagementBlazor.Client.csproj", "{147FCB6E-64A6-406D-8674-963FB15A49F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{147FCB6E-64A6-406D-8674-963FB15A49F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{147FCB6E-64A6-406D-8674-963FB15A49F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{147FCB6E-64A6-406D-8674-963FB15A49F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7E71829-6576-446F-8E9F-F95B99A3D230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7E71829-6576-446F-8E9F-F95B99A3D230}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7E71829-6576-446F-8E9F-F95B99A3D230}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7E71829-6576-446F-8E9F-F95B99A3D230}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

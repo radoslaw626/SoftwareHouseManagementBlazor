@@ -19,6 +19,21 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("AccessTeam", b =>
+                {
+                    b.Property<long>("AccessesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeamsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AccessesId", "TeamsId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("AccessTeam");
+                });
+
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
                     b.Property<string>("UserCode")
@@ -257,13 +272,189 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.ApplicationUser", b =>
+            modelBuilder.Entity("PositionResponsibilities", b =>
+                {
+                    b.Property<long>("PositionsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ResponsibilitiesId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("PositionsId", "ResponsibilitiesId");
+
+                    b.HasIndex("ResponsibilitiesId");
+
+                    b.ToTable("PositionResponsibilities");
+                });
+
+            modelBuilder.Entity("PositionWorker", b =>
+                {
+                    b.Property<long>("PositionsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WorkersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PositionsId", "WorkersId");
+
+                    b.HasIndex("WorkersId");
+
+                    b.ToTable("PositionWorker");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Access", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accesses");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Computer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Computers");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.HoursWorked", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Month")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("TaskId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WorkerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("HoursWorked");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Position", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Wage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Positions");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Responsibilities", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Responsibilities");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Task", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("AssignedHours")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("WorkedHours")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WorkerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Team", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MemberCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("TaskId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskId")
+                        .IsUnique()
+                        .HasFilter("[TaskId] IS NOT NULL");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Worker", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<long?>("ComputerId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -275,6 +466,12 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -311,6 +508,10 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ComputerId")
+                        .IsUnique()
+                        .HasFilter("[ComputerId] IS NOT NULL");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -320,6 +521,36 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("TeamWorker", b =>
+                {
+                    b.Property<long>("TeamsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WorkersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TeamsId", "WorkersId");
+
+                    b.HasIndex("WorkersId");
+
+                    b.ToTable("TeamWorker");
+                });
+
+            modelBuilder.Entity("AccessTeam", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Access", null)
+                        .WithMany()
+                        .HasForeignKey("AccessesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -333,7 +564,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.ApplicationUser", null)
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -342,7 +573,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.ApplicationUser", null)
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -357,7 +588,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.ApplicationUser", null)
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -366,11 +597,117 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.ApplicationUser", null)
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PositionResponsibilities", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Position", null)
+                        .WithMany()
+                        .HasForeignKey("PositionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Responsibilities", null)
+                        .WithMany()
+                        .HasForeignKey("ResponsibilitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PositionWorker", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Position", null)
+                        .WithMany()
+                        .HasForeignKey("PositionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
+                        .WithMany()
+                        .HasForeignKey("WorkersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.HoursWorked", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Task", "Task")
+                        .WithMany("HoursWorked")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", "Worker")
+                        .WithMany("HoursWorked")
+                        .HasForeignKey("WorkerId");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Task", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId");
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Team", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Task", "Task")
+                        .WithOne("Team")
+                        .HasForeignKey("SoftwareHouseManagementBlazor.Server.Models.Team", "TaskId");
+
+                    b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Worker", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Computer", "Computer")
+                        .WithOne("Worker")
+                        .HasForeignKey("SoftwareHouseManagementBlazor.Server.Models.Worker", "ComputerId");
+
+                    b.Navigation("Computer");
+                });
+
+            modelBuilder.Entity("TeamWorker", b =>
+                {
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoftwareHouseManagementBlazor.Server.Models.Worker", null)
+                        .WithMany()
+                        .HasForeignKey("WorkersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Computer", b =>
+                {
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Task", b =>
+                {
+                    b.Navigation("HoursWorked");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("SoftwareHouseManagementBlazor.Server.Models.Worker", b =>
+                {
+                    b.Navigation("HoursWorked");
                 });
 #pragma warning restore 612, 618
         }

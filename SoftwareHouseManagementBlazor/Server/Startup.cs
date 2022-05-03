@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using SoftwareHouseManagementBlazor.Server.Data;
 using SoftwareHouseManagementBlazor.Server.Models;
 using System.Linq;
+using SoftwareHouseManagementBlazor.Server.Services;
 
 namespace SoftwareHouseManagementBlazor.Server
 {
@@ -31,16 +32,22 @@ namespace SoftwareHouseManagementBlazor.Server
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<Worker>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<Worker, ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
             services.AddControllersWithViews();
+
+            services.AddTransient<ResponsibilitiesService>();
+            services.AddTransient<PositionService>();
+            services.AddTransient<WorkersService>();
+            services.AddTransient<ComputersService>();
+            services.AddTransient<TeamsService>();
             services.AddRazorPages();
         }
 
