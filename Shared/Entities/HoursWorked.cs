@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SoftwareHouseManagementBlazor.Shared.Models
+namespace SoftwareHouseManagementBlazor.Shared.Entities
 {
     public class HoursWorked
     {

@@ -3,45 +3,32 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SoftwareHouseManagementBlazor.Server.Data;
-using SoftwareHouseManagementBlazor.Server.Models;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.DTOs;
+using SoftwareHouseManagementBlazor.Shared.DTOs.FormModels;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 {
     public class WorkersService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Worker> _userManager;
 
-        public WorkersService(ApplicationDbContext context)
+        public WorkersService(ApplicationDbContext context, UserManager<Worker> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public void AddWorker(string firstName, string lastName, string email, string password, long positionId)
-        {
-
-
-            var position = _context.Positions
-                .FirstOrDefault(x => x.Id == positionId);
-            var worker = new Worker
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-                //Password = password,
-            };
-            worker.Positions.Add(position);
-            _context.Workers.Add(worker);
-            _context.SaveChanges();
-        }
         public IEnumerable<Worker> GetAll()
         {
             var workers = _context.Workers.Select(x => new Worker()
             {
                 Id = x.Id,
                 Email = x.Email,
-                //Password = x.Password,
                 FirstName = x.FirstName,
                 LastName = x.LastName
             }).ToList();
@@ -53,7 +40,6 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             {
                 Id = x.Id,
                 Email = x.Email,
-                //Password = x.Password,
                 FirstName = x.FirstName,
                 LastName = x.LastName
             }).ToList();
@@ -66,13 +52,12 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             var worker = _context.Workers
                 .Include(y => y.Teams).ThenInclude(z => z.Task)
                 .FirstOrDefault(x => x.Id == workerId);
+
             foreach (var item in worker.Teams)
             {
                 tasks.Add(item.Task);
             }
-
             return tasks;
-
         }
 
         public void LoginTime(long projectId, string date, int hours, int minutes, Worker identity)
@@ -94,5 +79,38 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             worker.HoursWorked.Add(hoursWorked);
             _context.SaveChanges();
         }
+        public IEnumerable<Worker> GetAllWithPositions()
+        {
+            var workers = _context.Workers.Select(x => new Worker()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Positions = x.Positions,
+                Email = x.Email
+            }).Where(y => y.Positions.Count != 0).ToList();
+            return workers;
+        }
+        public IEnumerable<Worker> GetAllWithComputers()
+        {
+            var workersWithComputers = _context.Workers
+                .Include(y => y.Computer)
+                .Where(x => x.ComputerId != null).ToList();
+
+            return workersWithComputers;
+        }
+        public void DeleteAssignedComputer(string workerId)
+        {
+            var worker = _context.Workers.Include(x => x.Computer).FirstOrDefault(y => y.Id == workerId);
+            worker.Computer = null;
+            _context.SaveChanges();
+        }
+        public void AssignComputer(string workerId, long computerId)
+        {
+            var worker = _context.Workers.FirstOrDefault(x => x.Id == workerId);
+            worker.ComputerId = computerId;
+            _context.SaveChanges();
+        }
+
     }
 }

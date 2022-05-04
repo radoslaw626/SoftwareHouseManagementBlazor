@@ -5,8 +5,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SoftwareHouseManagementBlazor.Shared;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server.Data
 {
@@ -21,7 +20,7 @@ namespace SoftwareHouseManagementBlazor.Server.Data
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Computer> Computers { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<Responsibilities> Responsibilities { get; set; }
+        public DbSet<Responsibility> Responsibilities { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<HoursWorked> HoursWorked { get; set; }

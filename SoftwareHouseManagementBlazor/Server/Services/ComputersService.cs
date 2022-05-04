@@ -2,7 +2,7 @@
 using SoftwareHouseManagementBlazor.Server.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 {
@@ -45,12 +45,6 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             return computers;
         }
 
-        public void AssignComputer(string workerId, long computerId)
-        {
-            var worker = _context.Workers.FirstOrDefault(x => x.Id == workerId);
-            worker.ComputerId = computerId;
-            _context.SaveChanges();
-        }
 
         public void ModifyComputer(long computerId, string model)
         {
@@ -58,19 +52,5 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             computer.Model = model;
             _context.SaveChanges();
         }
-
-        public IEnumerable<Worker> GetAllWithComputers()
-        {
-            var workersWithComputers = _context.Workers.Include(y => y.Computer).Where(x => x.ComputerId != null).ToList();
-            return workersWithComputers;
-        }
-
-        public void DeleteAssignedComputers(string workerId)
-        {
-            var worker = _context.Workers.Include(x => x.Computer).FirstOrDefault(y => y.Id == workerId);
-            worker.Computer = null;
-            _context.SaveChanges();
-        }
-
     }
 }

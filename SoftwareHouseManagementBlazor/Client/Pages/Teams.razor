@@ -1,0 +1,287 @@
+﻿@page "/teams"
+@using Microsoft.AspNetCore.Authorization
+@using SoftwareHouseManagementBlazor.Shared.DTOs.FormModels
+@using Microsoft.AspNetCore.Components
+@using System.Net
+@using System.Threading
+@using Newtonsoft.Json
+@using Task = System.Threading.Tasks.Task
+@using SoftwareHouseManagementBlazor.Shared.DTOs
+@inject HttpClient Http
+
+@if (_assignedTeams == null)
+{
+    <p><em>Loading...1</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Zespoły
+        </div>
+        <div class="panel-body">
+            <form>
+                <table class="table">
+                    <tr>
+                        <th>
+                            Zespół
+                        </th>
+                        <th>
+                            Ilość członków
+                        </th>
+                        <th>
+                            Projekt
+                        </th>
+                        <th>
+                            Przypisane Godziny
+                        </th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in (_assignedTeams))
+                    {
+                        <tr>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                @item.MemberCount
+                            </td>
+                            <td>
+                                @item.Task.Subject
+                            </td>
+                            <td>
+                                @{
+                                    var timeSpan = TimeSpan.FromTicks(item.Task.AssignedHours);
+                                }
+                                @TimeStampConverter(timeSpan)
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger">Danger</button>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </form>
+        </div>
+    </div>
+}
+
+@if (_notAssignedTeams == null)
+{
+    <p><em>Loading...2</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Przypisz drużynę do zlecenia
+        </div>
+        <div class="panel-body">
+
+            <EditForm Model="@AssignTaskModel" OnValidSubmit="@AssignTask">
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Drużyna</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="workerId" @bind="AssignTaskModel.teamId">
+                                <option selected>Wybierz zespół</option>
+                                @foreach (var item in _notAssignedTeams)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Zlecenie</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="positionId" @bind="AssignTaskModel.taskId">
+                                <option selected>Wybierz zlecenie</option>
+                                @foreach (var item in (_notAssignedTasks))
+                                {
+                                    <option value="@item.Id">@item.Subject</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group row">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Przypisane Godziny</label>
+                    <div class="col-sm-10">
+                        <div class="col-sm-2" style="padding-left: 0px !important;">
+                            <input class="form-control" type="number" min="0" step="1" placeholder="godziny" name="hours" @bind="AssignTaskModel.hours"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <input class="form-control" type="number" min="0" max="59" step="1" placeholder="minuty" name="minutes" @bind="AssignTaskModel.minutes"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Przypisz</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@if (_assignedTeams == null)
+{
+    <p><em>Loading...3</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Dodaj pracownika do zespołu
+        </div>
+        <div class="panel-body">
+
+            <EditForm Model="@AssignWorkerModel" OnValidSubmit="@AssignWorker">
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Zespół</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" placeholder="Wybierz zespół" @bind="AssignWorkerModel.teamId">
+                                <option selected>Wybierz zespół</option>
+                                @foreach (var item in _assignedTeams)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Pracownik</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" @bind="AssignWorkerModel.workerId">
+                                <option selected>Wybierz pracownika</option>
+                                @foreach (var item in (_workers))
+                                {
+                                    <option value="@item.Id">@item.FirstName @item.LastName @item.Email</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Przypisz</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+
+<div class="panel panel-default mt-5" style="width: auto">
+
+
+    <div class="panel-heading">
+        Dodaj zespół
+    </div>
+    <div class="panel-body">
+
+
+
+        <EditForm Model="TeamAddModel" OnValidSubmit="@AddTeam">
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Temat zlecenia</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="Nazwa drużyny" name="task" @bind="TeamAddModel.teamName">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+
+
+    private WorkerDTO[] _workers;
+    private TaskDTO[] _notAssignedTasks;
+    private TeamDTO[] _notAssignedTeams;
+    private TeamDTO[] _assignedTeams;
+
+    TeamAssignTaskModel AssignTaskModel = new TeamAssignTaskModel();
+    TeamAssignWorkerModel AssignWorkerModel = new TeamAssignWorkerModel();
+    TeamAddModel TeamAddModel = new TeamAddModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _workers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers");
+        _notAssignedTasks = await Http.GetFromJsonAsync<TaskDTO[]>("api/tasks/assigned/checkfail");
+        _notAssignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/checkfail");
+        _assignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/check");
+    }
+
+    public static string TimeStampConverter(TimeSpan ts)
+    {
+        return string.Format($"{(int)ts.TotalHours}:{ts:mm}");
+    }
+
+    private async Task AssignTask()
+    {
+        string json = JsonConvert.SerializeObject(AssignTaskModel);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/team/assigntask", httpContent);
+        Thread.Sleep(100);
+        _workers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers");
+        _notAssignedTasks = await Http.GetFromJsonAsync<TaskDTO[]>("api/tasks/assigned/checkfail");
+        _notAssignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/checkfail");
+        _assignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/check");
+    }
+    private async Task AssignWorker()
+    {
+        string json = JsonConvert.SerializeObject(AssignWorkerModel);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/team/assignworker", httpContent);
+        Thread.Sleep(100);
+        _workers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers");
+        _notAssignedTasks = await Http.GetFromJsonAsync<TaskDTO[]>("api/tasks/assigned/checkfail");
+        _notAssignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/checkfail");
+        _assignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/check");
+    }
+    private async Task AddTeam()
+    {
+        string json = JsonConvert.SerializeObject(TeamAddModel);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/team/add", httpContent);
+        Thread.Sleep(100);
+        _workers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers");
+        _notAssignedTasks = await Http.GetFromJsonAsync<TaskDTO[]>("api/tasks/assigned/checkfail");
+        _notAssignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/checkfail");
+        _assignedTeams = await Http.GetFromJsonAsync<TeamDTO[]>("api/teams/assigned/check");
+    }
+
+
+
+}

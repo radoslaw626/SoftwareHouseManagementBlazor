@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace SoftwareHouseManagementBlazor.Shared.Models
+namespace SoftwareHouseManagementBlazor.Shared.Entities
 {
     public class Task
     {

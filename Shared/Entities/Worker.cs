@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SoftwareHouseManagementBlazor.Shared.Models
+namespace SoftwareHouseManagementBlazor.Shared.Entities
 {
     public class Worker : IdentityUser
     {

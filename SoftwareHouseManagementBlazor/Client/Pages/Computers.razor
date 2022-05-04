@@ -1,0 +1,157 @@
+﻿@page "/computers"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SoftwareHouseManagementBlazor.Shared.DTOs
+@using SoftwareHouseManagementBlazor.Shared.Entities
+@using Task = System.Threading.Tasks.Task
+@using System.Runtime.CompilerServices
+@using System.Threading
+@using Microsoft.CodeAnalysis.CSharp.Formatting
+@using Newtonsoft.Json
+@using SoftwareHouseManagementBlazor.Shared.DTOs.FormModels
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h1>Komputery</h1>
+
+@if (_workersWithComputers == null)
+{
+    <p><em>Loading...1</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Stanowiska Pracowników
+        </div>
+        <div class="panel-body">
+            <form>
+                <table class="table">
+                    <tr>
+                        <th>
+                            Pracownik
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Stanowisko
+                        </th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in (_workersWithComputers))
+                    {
+                        <tr>
+                            <td>
+                                @item.FirstName @item.LastName
+                            </td>
+                            <td>
+                                @item.Email
+                            </td>
+                            <td>
+                                @item.Computer.Model
+                            </td>
+                            <td>
+                                <button @onclick="() => RemoveAssignedComputer(item.Id)" type="button" class="btn btn-danger">Danger</button>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </form>
+        </div>
+    </div>
+}
+@if (_workersWithoutComputers == null)
+{
+    <p><em>Loading...2</em></p>
+}
+else
+{
+
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Przypisz komputer do pracownika
+        </div>
+        <div class="panel-body">
+
+            <EditForm Model="@model" OnValidSubmit="@OnValidSubmit">
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Pracownik</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="workerId" @bind="@model.workerId">
+                                <option selected>Wybierz pracownika</option>
+                                @foreach (var item in _workersWithoutComputers)
+                                {
+                                    <option value="@item.Id">@item.Email - @item.FirstName @item.LastName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Stanowisko</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="positionId" @bind="@model.computerId">
+                                <option selected>Wybierz komputer</option>
+                                @foreach (var item in (_computersWithoutWorkers))
+                                {
+                                    <option value="@item.Id">@item.Model</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Przypisz</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+    private ComputerDTO[] _computersWithoutWorkers;
+    private WorkerDTO[] _workersWithComputers;
+    private WorkerDTO[] _workersWithoutComputers;
+
+    WorkerAssignComputerModel model = new WorkerAssignComputerModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _workersWithoutComputers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/computer/checkfalse");
+        _workersWithComputers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/computer/check");
+        _computersWithoutWorkers = await Http.GetFromJsonAsync<ComputerDTO[]>("api/computers/worker/checkfalse");
+    }
+
+     
+    private  async Task OnValidSubmit()
+    {
+        string json = JsonConvert.SerializeObject(model);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/worker/assigncomputer", httpContent);
+        Thread.Sleep(100);
+        _workersWithComputers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/computer/check");
+    }
+
+    private async Task RemoveAssignedComputer(string workerId)
+    {
+        string json = JsonConvert.SerializeObject(workerId);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp =  Http.PostAsync("api/worker/removeassignedcomputer", httpContent);
+        Thread.Sleep(100);
+        _workersWithComputers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/computer/check");
+    }
+
+}

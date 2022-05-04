@@ -9,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoftwareHouseManagementBlazor.Server.Data;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using SoftwareHouseManagementBlazor.Server.Services;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server
 {
@@ -41,9 +44,10 @@ namespace SoftwareHouseManagementBlazor.Server
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+            services.AddAutoMapper(typeof(ApiMappingProfile).Assembly);
             services.AddControllersWithViews();
 
-            services.AddTransient<ResponsibilitiesService>();
+            services.AddTransient<ResponsibilityService>();
             services.AddTransient<PositionService>();
             services.AddTransient<WorkersService>();
             services.AddTransient<ComputersService>();

@@ -1,0 +1,64 @@
+﻿@page "/tasks"
+@using Microsoft.AspNetCore.Authorization
+@using SoftwareHouseManagementBlazor.Shared.DTOs.FormModels
+@using Microsoft.AspNetCore.Components
+@using System.Net
+@using Newtonsoft.Json
+@using Task = System.Threading.Tasks.Task
+@using SoftwareHouseManagementBlazor.Shared.DTOs
+@inject HttpClient Http
+
+
+    <div class="panel panel-default mt-5" style="width: auto">
+        @if (_successBool == true)
+        {
+            <div class="alert alert-success" role="alert">
+                Poprawnie dodano zlecenie.
+            </div>
+        }
+
+        <div class="panel-heading">
+            Dodaj zlecenie
+        </div>
+        <div class="panel-body">
+
+
+
+            <EditForm Model="model" OnValidSubmit="@OnValidSubmit">
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Temat zlecenia</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Temat zlecenia" name="task" @bind="model.taskSubject">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+
+
+
+
+
+@code {
+
+    private bool _successBool;
+    public TaskAddModel model = new TaskAddModel();
+
+
+    private async Task OnValidSubmit()
+    {
+        string json = JsonConvert.SerializeObject(model);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/task/add", httpContent);
+        _successBool = true;
+    }
+
+}
+

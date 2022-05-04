@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace SoftwareHouseManagementBlazor.Shared.Models
+namespace SoftwareHouseManagementBlazor.Shared.Entities
 {
-    public class Responsibilities
+    public class Responsibility
     {
-        public Responsibilities()
+        public Responsibility()
         {
             Positions = new Collection<Position>();
         }

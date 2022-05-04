@@ -2,7 +2,8 @@
 using SoftwareHouseManagementBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.DTOs;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 {
@@ -15,20 +16,20 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             _context = context;
         }
 
-        public void CreatePosition(string name, decimal Wage)
+        public void CreatePosition(string name, decimal wage)
         {
             var entity = new Position
             {
                 Name = name,
-                Wage = Wage
+                Wage = wage
             };
             _context.Positions.Add(entity);
             _context.SaveChanges();
         }
 
-        public IEnumerable<Position> GetAll()
+        public IEnumerable<PositionDTO> GetAll()
         {
-            var positions = _context.Positions.Select(x => new Position()
+            var positions = _context.Positions.Select(x => new PositionDTO()
             {
                 Id = x.Id,
                 Name = x.Name,

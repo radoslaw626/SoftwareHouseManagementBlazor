@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using SoftwareHouseManagementBlazor.Server.Data;
-using SoftwareHouseManagementBlazor.Shared.Models;
+using SoftwareHouseManagementBlazor.Shared.DTOs;
+using SoftwareHouseManagementBlazor.Shared.Entities;
 
 namespace SoftwareHouseManagementBlazor.Server.Services
 
 {
-    public class ResponsibilitiesService
+    public class ResponsibilityService
     {
         private readonly ApplicationDbContext _context;
 
-        public ResponsibilitiesService(ApplicationDbContext context)
+        public ResponsibilityService(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public void CreateResponsibilities(string name)
         {
-            var entity = new Responsibilities
+            var entity = new Responsibility
             {
                 Name = name
             };
@@ -27,9 +28,9 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<Responsibilities> GetAll()
+        public IEnumerable<ResponsibilityDTO> GetAll()
         {
-            var responsibilities = _context.Responsibilities.Select(x => new Responsibilities()
+            var responsibilities = _context.Responsibilities.Select(x => new ResponsibilityDTO()
             {
                 Id = x.Id,
                 Name = x.Name
@@ -37,7 +38,7 @@ namespace SoftwareHouseManagementBlazor.Server.Services
             return responsibilities;
         }
 
-        public void AssignResponsibilities(long responsibilityID, long PositionId)
+        public void AssignResponsibility(long responsibilityID, long PositionId)
         {
             var responsibility = _context.Responsibilities.SingleOrDefault(x => x.Id == responsibilityID);
             var position = _context.Positions.SingleOrDefault(x => x.Id == PositionId);

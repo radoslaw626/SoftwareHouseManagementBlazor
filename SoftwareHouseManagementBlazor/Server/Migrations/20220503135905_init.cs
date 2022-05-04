@@ -40,7 +40,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -169,7 +169,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PositionResponsibilities",
+                name: "PositionResponsibility",
                 columns: table => new
                 {
                     PositionsId = table.Column<long>(type: "bigint", nullable: false),
@@ -177,15 +177,15 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PositionResponsibilities", x => new { x.PositionsId, x.ResponsibilitiesId });
+                    table.PrimaryKey("PK_PositionResponsibility", x => new { x.PositionsId, x.ResponsibilitiesId });
                     table.ForeignKey(
-                        name: "FK_PositionResponsibilities_Positions_PositionsId",
+                        name: "FK_PositionResponsibility_Positions_PositionsId",
                         column: x => x.PositionsId,
                         principalTable: "Positions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PositionResponsibilities_Responsibilities_ResponsibilitiesId",
+                        name: "FK_PositionResponsibility_Responsibilities_ResponsibilitiesId",
                         column: x => x.ResponsibilitiesId,
                         principalTable: "Responsibilities",
                         principalColumn: "Id",
@@ -508,8 +508,8 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 columns: new[] { "SubjectId", "SessionId", "Type" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PositionResponsibilities_ResponsibilitiesId",
-                table: "PositionResponsibilities",
+                name: "IX_PositionResponsibility_ResponsibilitiesId",
+                table: "PositionResponsibility",
                 column: "ResponsibilitiesId");
 
             migrationBuilder.CreateIndex(
@@ -565,7 +565,7 @@ namespace SoftwareHouseManagementBlazor.Server.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "PositionResponsibilities");
+                name: "PositionResponsibility");
 
             migrationBuilder.DropTable(
                 name: "PositionWorker");

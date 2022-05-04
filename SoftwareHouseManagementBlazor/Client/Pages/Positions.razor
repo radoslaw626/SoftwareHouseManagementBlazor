@@ -1,0 +1,211 @@
+﻿@page "/positions"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SoftwareHouseManagementBlazor.Shared.DTOs
+@using SoftwareHouseManagementBlazor.Shared.Entities
+@using Task = System.Threading.Tasks.Task
+@using System.Runtime.CompilerServices
+@using System.Threading
+@using Microsoft.CodeAnalysis.CSharp.Formatting
+@using Newtonsoft.Json
+@using SoftwareHouseManagementBlazor.Shared.DTOs.FormModels
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h1>Stanowiska</h1>
+
+@if (_positions == null)
+{
+    <p><em>Loading...1</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width:auto">
+        <div class="panel-heading">
+            Stanowiska
+        </div>
+        <div class="panel-body">
+            <form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Stanowisko</th>
+                            <th>Stawka</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var position in _positions)
+                        {
+                            <tr>
+                                <td>@position.Name</td>
+                                <td>@position.Wage</td>
+                                <td>Obowiązki</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+}
+@if (_workersWithPositions == null)
+{
+    <p><em>Loading...2</em></p>
+}
+else
+{
+    <div class="panel panel-default mt-5" style="width: auto">
+        <div class="panel-heading">
+            Stanowiska Pracowników
+        </div>
+        <div class="panel-body">
+            <form>
+                <table class="table">
+                    <tr>
+                        <th>
+                            Pracownik
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Stanowisko
+                        </th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in (_workersWithPositions))
+                    {
+                        <tr>
+                            <td>
+                                @item.FirstName @item.LastName
+                            </td>
+                            <td>
+                                @item.Email
+                            </td>
+                            <td>
+                                @{
+                                    var positionsEnum = item.Positions;
+                                    var countPositions = positionsEnum.Count;
+                                    int i = 0;
+
+                                    foreach (var pos in (item.Positions))
+                                    {
+                                        i++;
+                                        if (i < countPositions)
+                                        {
+                                            var position = pos.Name + ", ";
+                                            @position
+                                        }
+                                        else
+                                        {
+                                            var position = pos.Name;
+                                            @position
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <button @onclick="() => RemoveAssignedPositions(item.Id)" type="button" class="btn btn-danger">Danger</button>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </form>
+        </div>
+    </div>
+}
+@if (_workers == null)
+{
+    <p><em>Loading...3</em></p>
+}
+else
+{
+
+    <div class="panel panel-default mt-5" style="width:auto">
+        <div class="panel-heading">
+            Przypisz stanowisko do pracownika
+        </div>
+        <div class="panel-body">
+
+            <EditForm Model="@model" OnValidSubmit="@OnValidSubmit">
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Pracownik</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="workerId" @bind="@model.workerId">
+                                <option selected>Wybierz pracownika</option>
+                                @foreach (var item in _workers)
+                                {
+                                    <option value="@item.Id">@item.Email - @item.FirstName @item.LastName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputPassword3" class="col-form-label">Stanowisko</label>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <select class="form-control form-control-sm" aria-label="Default select example" name="positionId" @bind="@model.positionId">
+                                <option selected>Wybierz stanowisko</option>
+                                @foreach (var item in (_positions))
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Przypisz</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+}
+
+@code {
+    private PositionDTO[] _positions;
+    private WorkerDTO[] _workersWithPositions;
+    private WorkerDTO[] _workers;
+
+    PositionAssignModel model = new PositionAssignModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _positions = await Http.GetFromJsonAsync<PositionDTO[]>("api/positions");
+        _workers = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers");
+        _workersWithPositions = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/positions/check");
+    }
+
+     
+    private  async Task OnValidSubmit()
+    {
+        string json = JsonConvert.SerializeObject(model);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await Http.PostAsync("api/worker/assignposition", httpContent);
+        Thread.Sleep(100);
+        _workersWithPositions = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/positions/check");
+    }
+
+    private async Task RemoveAssignedPositions(string workerId)
+    {
+        string json = JsonConvert.SerializeObject(workerId);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp =  Http.PostAsync("api/worker/removeassignedpositions", httpContent);
+        Thread.Sleep(100);
+        _workersWithPositions = await Http.GetFromJsonAsync<WorkerDTO[]>("api/workers/positions/check");
+    }
+
+}
